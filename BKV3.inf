@@ -1,0 +1,120 @@
+;--------------------------------------------------------------------------
+;
+; BKV3.INF  --  Windows XP/2000/98/Me Still Image Setup File for BK-V3
+;
+; Copyright (c) BisysKorea Co., Ltd 2009
+;
+;--------------------------------------------------------------------------
+
+[Version]
+Signature   = "$Windows NT$"
+Class       = Image
+ClassGUID   = {6bdd1fc6-810f-11d0-bec7-08002be2092f}
+Provider    = %PROVIDER%
+DriverVer   = 02/16/2011,1.2.0.1
+CatalogFile = BKV3.cat
+
+[SourceDisksNames]
+1="BisysKorea BK-V3 USB Driver Disk",,
+
+[SourceDisksFiles]
+BKUSB.SYS = 1
+BKV3.dll  = 1
+ImgProc.dll = 1
+FxChk.dll   = 1
+
+[DestinationDirs]
+DefaultDestDir = 11
+SysFiles       = 10,System32\Drivers
+SysWOW64       = 10,SysWOW64
+
+[Manufacturer]
+%Device.Mfg% = Models,NT,NTx86,NTamd64
+
+[Models]
+%Device.DeviceDesc% = Device.Scanner, USB\VID_04B4&PID_1004
+
+[Models.NT]
+%Device.DeviceDesc% = Device.Scanner, USB\VID_04B4&PID_1004
+
+[Models.NTx86]
+%Device.DeviceDesc% = Device.Scanner, USB\VID_04B4&PID_1004
+
+[Models.NTamd64]
+%Device.DeviceDesc% = Device.Scanner.NTamd64, USB\VID_04B4&PID_1004
+
+
+[Device.Scanner]
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 1
+Capabilities  = 0x11
+CopyFiles     = DllFiles,SysFiles
+AddReg        = Device.AddReg
+DeviceData    = Device.DeviceData
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[Device.Scanner.HW]
+AddReg = Device.AddReg.Guid
+
+[Device.Scanner.Services]
+Addservice = CyUsb, 0x00000002, CyUsb.AddService
+
+
+[Device.Scanner.NTamd64]
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 1
+Capabilities  = 0x11
+CopyFiles     = SysWOW64,SysFiles
+AddReg        = Device.AddReg
+DeviceData    = Device.DeviceData
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[Device.Scanner.NTamd64.HW]
+AddReg = Device.AddReg.Guid
+
+[Device.Scanner.NTamd64.Services]
+Addservice = CyUsb, 0x00000002, CyUsb.AddService
+
+
+[CyUsb.AddService]
+DisplayName    = %CyUsb.SvcDesc%
+ServiceType    = 1         ; SERVICE_KERNEL_DRIVER
+StartType      = 3         ; SERVICE_DEMAND_START
+ErrorControl   = 1         ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\BKUSB.SYS
+LoadOrderGroup = Base
+
+[Device.AddReg]
+HKR,,HardwareConfig,1,4
+HKR,,DevLoader,,*NTKERN
+HKR,,NTMPDriver,,BKUSB.SYS
+
+[Device.AddReg.Guid]
+HKR,,DriverGUID,,%CyUsb.GUID%
+
+[Device.DeviceData]
+TwainDS    = %Device.DeviceDesc%
+TwainFdr   = BKV3
+ModelName  = %Device.DeviceDesc%
+
+[DllFiles]
+BKV3.dll
+ImgProc.dll
+FxChk.dll
+
+[SysWOW64]
+BKV3.dll
+ImgProc.dll
+FxChk.dll
+
+[SysFiles]
+BKUSB.SYS
+
+[Strings]
+PROVIDER="BisysKorea Co., Ltd"
+Device.Mfg="BisysKorea Co., Ltd"
+Device.DeviceDesc="BK-V3 A8 Scanner"
+CyUsb.SvcDesc="Cypress Generic USB Device Driver"
+CyUsb.GUID="{AE18AA60-7F6A-11d4-97DD-00010229B959}"

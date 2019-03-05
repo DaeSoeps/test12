@@ -1,0 +1,102 @@
+unit Main;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, WideStrings, DBXMySql, FMTBcd, DB, SqlExpr, StdCtrls;
+
+type
+  TFrmStudent = class(TForm)
+    HostIP: TEdit;
+    Label1: TLabel;
+    DBUser: TEdit;
+    Label2: TLabel;
+    DBPassword: TEdit;
+    Label3: TLabel;
+    Button1: TButton;
+    Button2: TButton;
+    logText: TMemo;
+    SQLConnection1: TSQLConnection;
+    SQLQuery1: TSQLQuery;
+    STNameKor: TEdit;
+    Label4: TLabel;
+    STKor: TEdit;
+    Label5: TLabel;
+    STEng: TEdit;
+    Label6: TLabel;
+    STMath: TEdit;
+    Label7: TLabel;
+    STCode: TEdit;
+    Label8: TLabel;
+    Button3: TButton;
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmStudent: TFrmStudent;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFrmStudent.Button1Click(Sender: TObject);
+var DBPath : String;
+begin
+    DBPath := ExtractFilePath(Application.ExeName);
+    SQLConnection1.Close;
+    SQLConnection1.DriverName                      := 'MySQL';
+    SQLConnection1.LibraryName                     := 'dbxmys.dll';
+    SQLConnection1.GetDriverFunc                   := 'getSQLDriverMYSQL';
+    //iDataModule.VendorLib                       := dbpath + 'fbembed.dll';
+//    iDataModule.VendorLib                       := dbpath + 'libmariadb.dll';
+    SQLConnection1.VendorLib                       := dbpath + 'libmysql.dll';
+    SQLConnection1.Params.Values['HostName'     ]  := HostIP.Text  ; //서버주소(ip 또는 HostName)
+    SQLConnection1.Params.Values['database'     ]  := 'test001';
+    SQLConnection1.Params.Values['User_Name'    ]  := DBUser.Text;//'sysdba';
+    SQLConnection1.Params.Values['Password'     ]  := DBPassword.Text;//'masterkey';
+    SQLConnection1.Params.Values['SQLDialect'   ]  := '3';
+    SQLConnection1.Params.Values['ServerCharSet']  := 'utf8';//'';
+    SQLConnection1.LoginPrompt                     := false;
+    SQLConnection1.Open;
+    SQLConnection1.Connected                       :=true;
+end;
+
+procedure TFrmStudent.Button2Click(Sender: TObject);
+begin
+    with  SQLQuery1  do
+    begin
+        Close;
+        SQL.Clear;
+        SQL.Add('select * from Studend');
+        Open;
+        LogText.Lines.Clear;
+        while not eof do
+        begin
+            LogText.Lines.Add(
+              '이름: ' + FieldByName('STNameKor').AsString + ' / 국어: ' + inttostr(FieldByName('STKor').AsInteger )
+            );
+            SQLQuery1.Next;
+        end;
+    end;
+end;
+
+procedure TFrmStudent.Button3Click(Sender: TObject);
+begin
+    with SQLQuery1 do
+    begin
+        Close;
+        sql.Clear;
+        sql.Add('insert into studend(STCode      , STNameKor, STKor, STEng, STMath, avg, tot)');
+        sql.Add('             values('''+  STCode.Text+''', '''+STNameKor.Text+''' , '+ STKor.Text+'   , '+STEng.Text+'   , '+STMath.Text+'    , 81  ,300)');
+        ExecSql;
+    end;
+end;
+
+end.

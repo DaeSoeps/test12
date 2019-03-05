@@ -1,0 +1,75 @@
+unit Main;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, WideStrings, DBXMySql, FMTBcd, DB, SqlExpr, StdCtrls;
+
+type
+  TFrmStudent = class(TForm)
+    HostIP: TEdit;
+    Label1: TLabel;
+    DBUser: TEdit;
+    Label2: TLabel;
+    DBPassword: TEdit;
+    Label3: TLabel;
+    Button1: TButton;
+    Button2: TButton;
+    logText: TMemo;
+    SQLConnection1: TSQLConnection;
+    SQLQuery1: TSQLQuery;
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmStudent: TFrmStudent;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFrmStudent.Button1Click(Sender: TObject);
+var DBPath : String;
+begin
+    DBPath := ExtractFilePath(Application.ExeName);
+    SQLConnection1.Close;
+    SQLConnection1.DriverName                      := 'MySQL';
+    SQLConnection1.LibraryName                     := 'dbxmys.dll';
+    SQLConnection1.GetDriverFunc                   := 'getSQLDriverMYSQL';
+    //iDataModule.VendorLib                       := dbpath + 'fbembed.dll';
+//    iDataModule.VendorLib                       := dbpath + 'libmariadb.dll';
+    SQLConnection1.VendorLib                       := dbpath + 'libmysql.dll';
+    SQLConnection1.Params.Values['HostName'     ]  := HostIP.Text  ; //서버주소(ip 또는 HostName)
+    SQLConnection1.Params.Values['database'     ]  := 'test001';
+    SQLConnection1.Params.Values['User_Name'    ]  := DBUser.Text;//'sysdba';
+    SQLConnection1.Params.Values['Password'     ]  := DBPassword.Text;//'masterkey';
+    SQLConnection1.Params.Values['SQLDialect'   ]  := '3';
+    SQLConnection1.Params.Values['ServerCharSet']  := 'utf8';//'';
+    SQLConnection1.LoginPrompt                     := false;
+    SQLConnection1.Open;
+    SQLConnection1.Connected                       :=true;
+end;
+
+procedure TFrmStudent.Button2Click(Sender: TObject);
+begin
+    SQLQuery1.Close;
+    SQLQuery1.SQL.Clear;
+    SQLQuery1.SQL.Add('select * from Studend');
+    SQLQuery1.Open;
+    LogText.Lines.Clear;
+    while not SQLQuery1.eof do
+    begin
+        LogText.Lines.Add(
+          '이름: ' + SQLQuery1.FieldByName('STNameKor').AsString
+        );
+        SQLQuery1.Next;
+    end;
+end;
+
+end.

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2019-03-05 11:45:10.942.pas,C:\Users\infra\Documents\RAD Studio\Projects\Unit1.pas=D:\infraProject\testDelphi\DBConn\Main.pas</Transaction>
+    <Transaction>2019-03-05 11:45:10.942.dfm,C:\Users\infra\Documents\RAD Studio\Projects\Unit1.dfm=D:\infraProject\testDelphi\DBConn\Main.dfm</Transaction>
+    <Transaction>2019-03-05 11:45:39.145.dproj,C:\Users\infra\Documents\RAD Studio\Projects\Project1.dproj=D:\infraProject\testDelphi\DBConn\DBConn.dproj</Transaction>
+  </Transactions>
+</BorlandProject>
